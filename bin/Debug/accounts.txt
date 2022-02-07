@@ -1,0 +1,4 @@
+AccountType AccountName AccounNumber Balance
+1 Current1 123 500
+2 Saving2 456 700
+3 Credit1 789 300

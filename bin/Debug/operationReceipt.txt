@@ -1,0 +1,10 @@
+Bank
+2022-02-07T13:20:24
+All operations done:
+Date			Operation Type	Account Number	 Account Type	Previous Balance	Current Balance/Available Credit
+2/7/2022 1:19:40 PM	NewAccount		123	Current account		500		500
+2/7/2022 1:19:41 PM	NewAccount		456	Savings account		700		700
+2/7/2022 1:19:42 PM	NewAccount		789	Credit account		0		300
+2/7/2022 1:20:05 PM	Withdraw		456	Savings account		700		200
+2/7/2022 1:20:13 PM	Withdraw		456	Savings account		200		0
+2/7/2022 1:20:19 PM	Account deleted		456	Savings account		0		0
