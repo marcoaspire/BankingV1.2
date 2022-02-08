@@ -1,0 +1,4 @@
+AccountType AccountName AccounNumber Balance Limit(Credit)
+alex@gmail.com 1 Current1 123 100
+alex@gmail.com 3 Credit1 789 0 300
+marco@gmail.com 2 ddas 147 300

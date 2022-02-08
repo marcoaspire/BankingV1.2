@@ -2,3 +2,4 @@ Email	Password
 alex@gmail.com Alex!1234
 maria@gmail.com Maria!1234
 marco@gmail.com Marco!1234
+luis@gmail.com Luis!1234

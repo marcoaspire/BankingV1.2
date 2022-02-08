@@ -26,7 +26,7 @@ namespace BankingV1._7.Account
             float previo = account.Value.Balance;
             Console.WriteLine("Previo:"+ previo);
             account.Value.Balance += deposit;
-            OperationBO.operations.Add(DateTime.Now, new Operation("Deposit", (Account)account.Value.Clone(), accountAuxiliary.Balance));
+            OperationBO.operations.Add(DateTime.Now, new Operation("Deposit", (Account)account.Value.Clone(), accountAuxiliary.Balance, deposit));
             
             Console.WriteLine($"Now your balance is ${account.Value.Balance}");
             //return account;
@@ -49,7 +49,7 @@ namespace BankingV1._7.Account
             {
                 Account auxiliar = (Account)account.Value.Clone();
                 account.Value.Balance -= withdrawal;
-                OperationBO.operations.Add(DateTime.Now, new Operation("Withdraw", (Account)account.Value.Clone(), auxiliar.Balance));
+                OperationBO.operations.Add(DateTime.Now, new Operation("Withdraw", (Account)account.Value.Clone(), auxiliar.Balance, withdrawal));
                 Console.WriteLine($"Now your balance is ${account.Value.Balance}");
             }
             //return account;
@@ -66,7 +66,8 @@ namespace BankingV1._7.Account
             Console.WriteLine("Your accounts are:");
             foreach (Account item in AccountBO.accounts)
             {
-                Console.WriteLine(item.ToString());
+                if (BankMenu.email_session.Equals(item.Owner))
+                    Console.WriteLine(item.ToString());
             }
 
         }
@@ -88,8 +89,7 @@ namespace BankingV1._7.Account
             LinkedListNode<Account> node = AccountBO.accounts.First;
             do
             {
-                //Console.WriteLine("comparando con:"+ node.Value.AccountNumber);
-                if (node.Value.AccountNumber == accountNumber)
+                if (node.Value.AccountNumber == accountNumber && BankMenu.email_session.Equals(node.Value.Owner))
                 {
                     return node;
                 }
@@ -108,7 +108,7 @@ namespace BankingV1._7.Account
                 Console.WriteLine("You need to withdraw all your money before to delete");
             else
             {
-                OperationBO.operations.Add(DateTime.Now, new Operation("Account deleted", a, a.Balance));
+                OperationBO.operations.Add(DateTime.Now, new Operation("Account deleted", a, a.Balance,0));
                 accounts.Remove(a);
 
             }
@@ -125,7 +125,7 @@ namespace BankingV1._7.Account
                     Console.WriteLine("Error:Name can not be empty");
             } while (string.IsNullOrEmpty(name));
 
-            OperationBO.operations.Add(DateTime.Now, new Operation("Account name updated", a, a.Balance));
+            OperationBO.operations.Add(DateTime.Now, new Operation("Account name updated", a, a.Balance,0));
 
             accounts.Where(account => account == a).ToList().ForEach(s => s.AccountName = name);
             Console.WriteLine("Your change is saved");

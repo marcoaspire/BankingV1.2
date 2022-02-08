@@ -1,4 +1,4 @@
-AccountType AccountName AccounNumber Balance
-1 Current1 123 500
-2 Saving2 456 700
-3 Credit1 789 300
+Owner AccountType AccountName AccounNumber Balance Limit(Credit)
+alex@gmail.com 1 CurrentDay 123 250
+alex@gmail.com 3 Credit1 789 0 300
+marco@gmail.com 2 SavingUniversity 147 300

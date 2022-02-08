@@ -6,25 +6,28 @@ using System.Threading.Tasks;
 
 namespace BankingV1._7.Account
 {
-    abstract class Account : ICloneable, IComparable
+    abstract class Account : ICloneable
     {
         long accountNumber;
         string accountName;
         string accountType;
         protected float balance;
+        string owner;
         DateTime createdAt;
         //constructor
-        public Account( string accountName, long accountNumber, string accountType, float balance)
+        public Account(string owner, string accountName, long accountNumber, string accountType, float balance)
         {
             this.accountNumber = accountNumber;
             this.AccountName = accountName;
             this.AccountType = accountType;
             this.balance = balance;
             this.createdAt = DateTime.Now;
+            this.owner = owner;
         }
-        public Account()
+        public Account(string owner)
         {
             this.createdAt = DateTime.Now;
+            this.owner = owner;
         }
 
         //Properties 
@@ -37,6 +40,7 @@ namespace BankingV1._7.Account
             get => createdAt;
             //set => createdAt = value; // read only
         }
+        public string Owner { get => owner; set => owner = value; }
 
 
         //methods

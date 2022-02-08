@@ -9,18 +9,18 @@ namespace BankingV1._7.Account.SavingAccount
     class Saving : Account
     {
         float interest;
-        public Saving(string accountName, long accountNumber, string accountType, float balance, float interest) : base(accountName, accountNumber,accountType, balance)
+        public Saving(string owner,string accountName, long accountNumber, string accountType, float balance, float interest) : base(owner,accountName, accountNumber,accountType, balance)
         {
             this.interest = interest;
         }
-        public Saving(float interest) : base()
+        public Saving(string owner,float interest) : base(owner)
         {
             this.interest = interest;
 
         }
         //Properties 
         public float Interest { get => interest; set => interest = value; }
-        public float Balance { get => balance; set => balance = value; }
+        //public float Balance { get => balance; set => balance = value; }
 
         public override string ToString()
         {

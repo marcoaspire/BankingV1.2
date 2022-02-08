@@ -26,7 +26,7 @@ namespace BankingV1._7.Account.CurrentAccount
             long accountNumber;
             float balance;
 
-            Current account = new Current(10000);
+            Current account = new Current(BankMenu.email_session,10000);
             account.AccountType = "Current account";
 
 
@@ -81,7 +81,7 @@ namespace BankingV1._7.Account.CurrentAccount
             if (deposit > currentAccount.MaxDepositLimit)
                 throw new Exception("Deposit can be greater than its limit "+ currentAccount.MaxDepositLimit);
             account.Value.Balance += deposit;
-            OperationBO.operations.Add(DateTime.Now, new Operation("Deposit",(Account) account.Value.Clone(), currentAccount.Balance));
+            OperationBO.operations.Add(DateTime.Now, new Operation("Deposit",(Account) account.Value.Clone(), currentAccount.Balance, deposit));
 
             Console.WriteLine($"Now your balance is ${account.Value.Balance}");
             //return account;

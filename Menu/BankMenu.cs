@@ -16,30 +16,36 @@ namespace BankingV1._7.Menu
 {
     class BankMenu
     {
+        //it´s like a session variable
+        public static string email_session;
         public bool Register()
         {
             string password = "", email;
             bool validEmail = false;
             do
             {
-                Console.WriteLine("\nSign Up");
+                Console.WriteLine("\n\nSign Up");
                 Console.WriteLine("Type your email");
                 email = Console.ReadLine();
                 try
                 {
                     email = new MailAddress(email).Address;
                     validEmail = true;
-                    Console.WriteLine("Type your password, it needs to follow the below rules");
+                    Console.WriteLine("\nType your password, it needs to follow the below rules");
                     Console.WriteLine("It should contain at least one uppercase and lowercase alphabets");
                     Console.WriteLine("It should contain at least one numerical value");
                     Console.WriteLine("It should contain at least one special character");
                     Console.WriteLine("It should not contain any whitespaces");
-                    Console.WriteLine("The length of the password should more than 7 characters");
+                    Console.WriteLine("The length of the password should more than 7 characters");
                     password = Console.ReadLine();
                     if (!UserBO.ValidatePassword(password))
                     {
                         throw new Exception("The password does not meet the requirements, try again, please");
                     }
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Invalid format");
                 }
                 catch (FormatException)
                 {
@@ -53,33 +59,50 @@ namespace BankingV1._7.Menu
                 }
             } while (!UserBO.ValidatePassword(password) || !validEmail);
             UserBO.users.AddLast(new User(email, password));
-            FileBO.SaveBinaryData();
-            FileBO.DisplayBinaryValues();
+            FileBO.SaveUsers();
+            //FileBO.DisplayBinaryValues();
             return true;
         }
         public void LogIn()
         {
+            
             bool verification = false;
-            string password = "", email;
+            string password = "";
             bool validEmail = false;
             do
             {
                 Console.WriteLine("\nLogin");
                 Console.WriteLine("Email");
-                email = Console.ReadLine();
+                email_session = Console.ReadLine();
                 Console.WriteLine("\nPassword");
                 password = Console.ReadLine();
-                //find  in UserBO.users
-                if (UserBO.users.Find(new User(email, password)) is null)
+                try
                 {
-                    Console.WriteLine("Incorrect email address or password. Please try again.");
+                    if (UserBO.users.Find(new User(email_session, password)) is null)
+                    {
+                        Console.WriteLine("Incorrect email address or password. Please try again.");
+                    }
+                    else
+                    {
+                        verification = true;
+                        FileBO.DataLoad();
+                        DisplayMenu();
+                    }
                 }
-                else
+                catch (ArgumentException)
                 {
-                    verification = true;
-                    FileBO.DataLoad();
-                    DisplayMenu();
+                    Console.WriteLine("Invalid format");
                 }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Please provide a valid email address");
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine(e.Message);
+                }
+
             } while (!verification);
 
         }
@@ -108,9 +131,9 @@ namespace BankingV1._7.Menu
             }
             else
             {
-                Console.WriteLine("Thank you for using this system");
+                Console.WriteLine("\nThank you for using this system");
             }
-        }
+        }   
         public void DisplayMenu()
         {
             int op, choice;
@@ -151,7 +174,6 @@ namespace BankingV1._7.Menu
                             break;
                         if (AccountBO.accounts is null)
                             AccountBO.accounts = new LinkedList<Account.Account>();
-                         //   AccountBO.accounts = new List<Account.Account>();
                         
                         Account.Account newAccount = null;
 
@@ -172,9 +194,8 @@ namespace BankingV1._7.Menu
                         if (!AccountBO.accounts.Contains(newAccount))
                         {
                             AccountBO.accounts.AddLast(newAccount);
-                            OperationBO.operations.Add(DateTime.Now, new Operation("NewAccount", (Account.Account)newAccount.Clone(),newAccount.Balance));
+                            OperationBO.operations.Add(DateTime.Now, new Operation("NewAccount", (Account.Account)newAccount.Clone(),newAccount.Balance,0));
                         }
-                            //AccountBO.accounts.Add(newAccount); 
                         else
                             Console.WriteLine("Error: We could not open the new account because you alredy have one with that account number.");
 
@@ -288,13 +309,13 @@ namespace BankingV1._7.Menu
                                 {
                                     accoutFound.Value.Balance = creditBO.MonthEndBalance((Credit)accoutFound.Value);
                                     Console.WriteLine();
-                                    Console.WriteLine(accoutFound.ToString());
+                                    Console.WriteLine(accoutFound.Value.ToString());
                                 }
                                 else if (type.Equals("Current"))
                                 {
                                     accoutFound.Value.Balance = currentBO.MonthEndBalance(accoutFound.Value);
 
-                                    Console.WriteLine(accoutFound.ToString());
+                                    Console.WriteLine(accoutFound.Value.ToString());
                                 }
                                 else if (type.Equals("Saving"))
                                 {
@@ -359,6 +380,7 @@ namespace BankingV1._7.Menu
                     case '8':
                         Console.WriteLine("Thank you for using this system");
                         new OperationBO().PrintOperations();
+                        FileBO.SaveData();
                         LoginMenu();
                         break;
 

@@ -15,7 +15,6 @@ namespace BankingV1._7.Account
         public void PrintOperations()
         {
             string fileNameTxt = "operationReceipt.txt";
-            Console.WriteLine(fileNameTxt);
             try
             {
                 using (StreamWriter sw = File.CreateText(fileNameTxt))
@@ -23,7 +22,7 @@ namespace BankingV1._7.Account
                     sw.WriteLine("Bank");
                     sw.WriteLine(DateTime.Now.ToString("s", CultureInfo.GetCultureInfo("en-US")));
                     sw.WriteLine("All operations done:");
-                    sw.WriteLine("Date\t\t\tOperation Type\tAccount Number\t Account Type\tPrevious Balance\tCurrent Balance/Available Credit");
+                    sw.WriteLine("Date\t\t\tOperation Type\tAccount Number\t Account Type\tPrevious Balance\tCurrent Balance/Available Credit\tAmount");
                     foreach (var item in operations)
                     {
                         sw.Write(item.Key + "\t");

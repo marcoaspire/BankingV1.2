@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BankingV1._7.Menu;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace BankingV1._7.Account.SavingAccount
             long accountNumber;
             float balance, interest = 10;
 
-            Account account = new Saving(interest);
+            Account account = new Saving(BankMenu.email_session,interest);
             account.AccountType = "Savings account";
 
 

@@ -10,16 +10,16 @@ namespace BankingV1._7.Account.CurrentAccount
     {
         private float maxDepositLimit;
 
-        public Current(string accountName, long accountNumber, string accountType, float balance, float max) : base(accountName, accountNumber, accountType, balance)
+        public Current(string owner,string accountName, long accountNumber, string accountType, float balance, float max) : base(owner,accountName, accountNumber, accountType, balance)
         {
             this.maxDepositLimit = max;
         }
-        public Current(float max) : base()
+        public Current(string owner,float max) : base(owner)
         {
             this.maxDepositLimit = max;
         }
 
-        public float Balance { get => balance; set => balance = value; }
+        //public float Balance { get => balance; set => balance = value; }
         public float MaxDepositLimit { get => maxDepositLimit; set => maxDepositLimit = value; }
     }
 }

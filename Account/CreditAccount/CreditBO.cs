@@ -41,7 +41,7 @@ namespace BankingV1._7.Account.CreditAccount
                 Console.WriteLine("credito anterior: "+ availableCredit);
 
                 account.Value.Balance += withdrawal;
-                OperationBO.operations.Add(DateTime.Now, new Operation("Pay with credit",(Account) account.Value.Clone(), availableCredit));
+                OperationBO.operations.Add(DateTime.Now, new Operation("Pay with credit",(Account) account.Value.Clone(), availableCredit, withdrawal));
                 Console.WriteLine(((Credit)account.Value).ToString());
             }
 
@@ -60,7 +60,7 @@ namespace BankingV1._7.Account.CreditAccount
                 validDeposit = float.TryParse(Console.ReadLine(), out deposit);
             } while (!validDeposit || deposit < 0);
             account.Value.Balance -= deposit;
-            OperationBO.operations.Add(DateTime.Now, new Operation("Credit payment", (Account)account.Value.Clone(), creditAccount.Balance));
+            OperationBO.operations.Add(DateTime.Now, new Operation("Credit payment", (Account)account.Value.Clone(), creditAccount.Balance, deposit));
             Console.WriteLine(account.Value.ToString());
         }
 
@@ -77,7 +77,7 @@ namespace BankingV1._7.Account.CreditAccount
                 validBalance = Single.TryParse(Console.ReadLine(), out balance);
                
             } while (!validBalance || !CheckBalance(balance));
-           account = new Credit(interest, balance);
+           account = new Credit(BankMenu.email_session, interest, balance);
 
             account.AccountType = "Credit account";
 
