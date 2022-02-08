@@ -23,15 +23,15 @@ namespace BankingV1._7.Account
 
         public Operation(string operationType, Account account, float previousBalance, float amount)
         {
-            this.operationType = operationType;
-            this.account = account;
-            this.previousBalance = previousBalance;
-            this.amount = amount;
+            OperationType = operationType;
+            Account = account;
+            PreviousBalance = previousBalance;
+            Amount = amount;
         }
        
 
 
-        public string OperationType { get => operationType; set => OperationType = value; }
+        public string OperationType { get => operationType; set => operationType = value; }
         public float PreviousBalance { get => previousBalance; set => previousBalance = value; }
         public float Amount { get => amount; set => amount = value; }
         internal Account Account { get => account; set => account = value; }

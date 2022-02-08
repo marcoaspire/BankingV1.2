@@ -11,11 +11,11 @@ namespace BankingV1._7.Account.SavingAccount
         float interest;
         public Saving(string owner,string accountName, long accountNumber, string accountType, float balance, float interest) : base(owner,accountName, accountNumber,accountType, balance)
         {
-            this.interest = interest;
+            Interest = interest;
         }
         public Saving(string owner,float interest) : base(owner)
         {
-            this.interest = interest;
+            Interest = interest;
 
         }
         //Properties 

@@ -35,11 +35,6 @@ namespace BankingV1._7.Account.CurrentAccount
                 Console.WriteLine("\nType your account numbers");
                 validAccount = Int64.TryParse(Console.ReadLine(), out accountNumber);
                 account.AccountNumber = accountNumber;
-
-                //check if it's not in the list
-
-
-
             } while (!validAccount);
 
             do
@@ -60,31 +55,37 @@ namespace BankingV1._7.Account.CurrentAccount
             Console.WriteLine($"Hello dear user, your have a new {account.AccountType} {account.AccountName}, the account number is {account.AccountNumber} and you have ${account.Balance}");
             return account;
         }
-        private float checkBalance(float balance)
-        {
-            if (balance < 0)
-                return 0;
-            else
-                return balance;
-        }
+        
 
         public override void Deposit(LinkedListNode<Account> account)
         {
             Current currentAccount = (Current)account.Value.Clone();
             bool validDeposit = false;
             float deposit;
-            do
+            try
             {
-                Console.WriteLine("Type the amount you want to deposit");
-                validDeposit = float.TryParse(Console.ReadLine(), out deposit);
-            } while (!validDeposit || deposit < 0);
-            if (deposit > currentAccount.MaxDepositLimit)
-                throw new Exception("Deposit can be greater than its limit "+ currentAccount.MaxDepositLimit);
-            account.Value.Balance += deposit;
-            OperationBO.operations.Add(DateTime.Now, new Operation("Deposit",(Account) account.Value.Clone(), currentAccount.Balance, deposit));
+                do
+                {
+                    Console.WriteLine("Type the amount you want to deposit");
+                    validDeposit = float.TryParse(Console.ReadLine(), out deposit);
+                } while (!validDeposit || deposit < 0);
+                if (deposit > currentAccount.MaxDepositLimit)
+                    throw new Exception("Deposit can be greater than its limit " + currentAccount.MaxDepositLimit);
+                account.Value.Balance += deposit;
+                OperationBO.operations.Add(DateTime.Now, new Operation("Deposit", (Account)account.Value.Clone(), currentAccount.Balance, deposit));
 
-            Console.WriteLine($"Now your balance is ${account.Value.Balance}");
-            //return account;
+                Console.WriteLine($"Now your balance is ${account.Value.Balance}");
+
+            }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Specified cast is not valid");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            
         }
 
 

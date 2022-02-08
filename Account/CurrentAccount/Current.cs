@@ -12,11 +12,11 @@ namespace BankingV1._7.Account.CurrentAccount
 
         public Current(string owner,string accountName, long accountNumber, string accountType, float balance, float max) : base(owner,accountName, accountNumber, accountType, balance)
         {
-            this.maxDepositLimit = max;
+            MaxDepositLimit = max;
         }
         public Current(string owner,float max) : base(owner)
         {
-            this.maxDepositLimit = max;
+            MaxDepositLimit = max;
         }
 
         //public float Balance { get => balance; set => balance = value; }

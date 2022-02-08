@@ -17,17 +17,17 @@ namespace BankingV1._7.Account
         //constructor
         public Account(string owner, string accountName, long accountNumber, string accountType, float balance)
         {
-            this.accountNumber = accountNumber;
-            this.AccountName = accountName;
-            this.AccountType = accountType;
-            this.balance = balance;
+            AccountNumber = accountNumber;
+            AccountName = accountName;
+            AccountType = accountType;
+            Balance = balance;
             this.createdAt = DateTime.Now;
-            this.owner = owner;
+            Owner = owner;
         }
         public Account(string owner)
         {
             this.createdAt = DateTime.Now;
-            this.owner = owner;
+            Owner = owner;
         }
 
         //Properties 
@@ -56,8 +56,20 @@ namespace BankingV1._7.Account
 
         public override bool Equals(Object obj)
         {
-            Account account = obj as Account;
-            return this.AccountNumber.Equals(account.AccountNumber);
+            try
+            {
+                Account account = obj as Account;
+                return this.AccountNumber.Equals(account.AccountNumber);
+            }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Specified cast is not valid");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            return false;
         }
 
         public object Clone()
@@ -65,10 +77,9 @@ namespace BankingV1._7.Account
             return (Account)MemberwiseClone();
         }
 
-        public int CompareTo(object obj)
+        public override int GetHashCode()
         {
-            Account account = obj as Account;
-            return String.Compare(this.accountType, account.accountType);
+            return 239528309 + AccountNumber.GetHashCode();
         }
     }
 }

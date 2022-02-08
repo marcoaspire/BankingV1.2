@@ -16,8 +16,6 @@ namespace BankingV1._7.Menu
 {
     static class FileBO
     {
-        
-        
         public static void SaveData()
         {
             const string fileNameTxt = "accounts.txt";

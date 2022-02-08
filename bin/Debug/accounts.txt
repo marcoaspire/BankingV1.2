@@ -1,4 +1,4 @@
 Owner AccountType AccountName AccounNumber Balance Limit(Credit)
 alex@gmail.com 1 CurrentDay 123 250
 alex@gmail.com 3 Credit1 789 0 300
-marco@gmail.com 2 SavingUniversity 147 300
+marco@gmail.com 2 SavingMaster 147 1210

@@ -58,9 +58,22 @@ namespace BankingV1._7.Menu
                     Console.WriteLine(e.Message);
                 }
             } while (!UserBO.ValidatePassword(password) || !validEmail);
-            UserBO.users.AddLast(new User(email, password));
-            FileBO.SaveUsers();
-            //FileBO.DisplayBinaryValues();
+            User newUser = new User(email, password);
+            try
+            {
+                if (UserBO.users.Find(newUser) != null)
+                    throw new Exception("Someone already has this email address. Try again, please.\n");
+                else
+                {
+                    UserBO.users.AddLast(newUser);
+                    FileBO.SaveUsers();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
             return true;
         }
         public void LogIn()
@@ -128,6 +141,8 @@ namespace BankingV1._7.Menu
             {
                 if (Register())
                     LogIn();
+                else
+                    LoginMenu();
             }
             else
             {
@@ -191,15 +206,26 @@ namespace BankingV1._7.Menu
                             default:
                                 break;
                         }
-                        if (!AccountBO.accounts.Contains(newAccount))
+                        try
                         {
-                            AccountBO.accounts.AddLast(newAccount);
-                            OperationBO.operations.Add(DateTime.Now, new Operation("NewAccount", (Account.Account)newAccount.Clone(),newAccount.Balance,0));
+                            if (!AccountBO.accounts.Contains(newAccount))
+                            {
+                                AccountBO.accounts.AddLast(newAccount);
+                                OperationBO.operations.Add(DateTime.Now, new Operation("NewAccount", (Account.Account)newAccount.Clone(), newAccount.Balance, 0));
+                            }
+                            else
+                                Console.WriteLine("Error: We could not open the new account because Someone already has that account number.");
                         }
-                        else
-                            Console.WriteLine("Error: We could not open the new account because you alredy have one with that account number.");
+                        catch (InvalidCastException)
+                        {
+                            Console.WriteLine("Specified cast is not valid");
+                        }
+                        catch (Exception)
+                        {
 
-
+                            Console.WriteLine("Error");
+                        }
+                        
                         break;
                     case '2':
                         if (AccountBO.accounts != null)
@@ -245,6 +271,10 @@ namespace BankingV1._7.Menu
                                     {
                                         savingBO.Deposit(accoutFound);
                                     }
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    Console.WriteLine("Specified cast is not valid");
                                 }
                                 catch (Exception e)
                                 {
@@ -300,31 +330,43 @@ namespace BankingV1._7.Menu
                         if (AccountBO.accounts != null)
                         {
                             LinkedListNode<Account.Account> accoutFound = AccountBO.Find();
-                            if (accoutFound != null)
+                            try
                             {
-                                string type = accoutFound.Value.GetType().Name;
-                                Console.WriteLine("Account Statement");
+                                if (accoutFound != null)
+                                {
+                                    string type = accoutFound.Value.GetType().Name;
+                                    Console.WriteLine("Account Statement");
 
-                                if (type.Equals("Credit"))
-                                {
-                                    accoutFound.Value.Balance = creditBO.MonthEndBalance((Credit)accoutFound.Value);
-                                    Console.WriteLine();
-                                    Console.WriteLine(accoutFound.Value.ToString());
-                                }
-                                else if (type.Equals("Current"))
-                                {
-                                    accoutFound.Value.Balance = currentBO.MonthEndBalance(accoutFound.Value);
+                                    if (type.Equals("Credit"))
+                                    {
+                                        accoutFound.Value.Balance = creditBO.MonthEndBalance((Credit)accoutFound.Value);
+                                        Console.WriteLine();
+                                        Console.WriteLine(accoutFound.Value.ToString());
+                                    }
+                                    else if (type.Equals("Current"))
+                                    {
+                                        accoutFound.Value.Balance = currentBO.MonthEndBalance(accoutFound.Value);
 
-                                    Console.WriteLine(accoutFound.Value.ToString());
+                                        Console.WriteLine(accoutFound.Value.ToString());
+                                    }
+                                    else if (type.Equals("Saving"))
+                                    {
+                                        accoutFound.Value.Balance = savingBO.MonthEndBalance(accoutFound.Value);
+                                        Console.WriteLine(accoutFound.Value.ToString());
+                                    }
                                 }
-                                else if (type.Equals("Saving"))
-                                {
-                                    accoutFound.Value.Balance = savingBO.MonthEndBalance(accoutFound.Value);
-                                    Console.WriteLine(accoutFound.Value.ToString());
-                                }
+                                else
+                                    Console.WriteLine("We couldn’t find account with that number");
                             }
-                            else
-                                Console.WriteLine("We couldn’t find account with that number");
+                            catch (InvalidCastException)
+                            {
+                                Console.WriteLine("Specified cast is not valid");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error:"+ e.Message);
+                            }
+                            
                         }
                         else
                             Console.WriteLine("You don't have an account with us. Open your account now!");
@@ -346,33 +388,44 @@ namespace BankingV1._7.Menu
                             } while (!validNumber || choice > 3 || choice < 1);
                             if (choice == 3)
                                 break;
-                            
 
-                            string type = accoutFound2.Value.GetType().Name;
-                            if (type.Equals("Credit"))
+                            try
                             {
-                                Credit account=(Credit)accoutFound2.Value;
-                                if (choice == 1)
-                                    creditBO.UpdateAccount(account);
-                                else
-                                    creditBO.RemoveAccount(account);
+                                string type = accoutFound2.Value.GetType().Name;
+                                if (type.Equals("Credit"))
+                                {
+                                    Credit account = (Credit)accoutFound2.Value;
+                                    if (choice == 1)
+                                        creditBO.UpdateAccount(account);
+                                    else
+                                        creditBO.RemoveAccount(account);
+                                }
+                                else if (type.Equals("Current"))
+                                {
+                                    Current account = (Current)accoutFound2.Value;
+                                    if (choice == 1)
+                                        creditBO.UpdateAccount(account);
+                                    else
+                                        currentBO.RemoveAccount(account);
+                                }
+                                else if (type.Equals("Saving"))
+                                {
+                                    Saving account = (Saving)accoutFound2.Value;
+                                    if (choice == 1)
+                                        creditBO.UpdateAccount(account);
+                                    else
+                                        savingBO.RemoveAccount(account);
+                                }
                             }
-                            else if (type.Equals("Current"))
+                            catch (InvalidCastException)
                             {
-                                Current account = (Current)accoutFound2.Value;
-                                if (choice == 1)
-                                    creditBO.UpdateAccount(account);
-                                else
-                                    currentBO.RemoveAccount(account);
+                                Console.WriteLine("Specified cast is not valid");
                             }
-                            else if (type.Equals("Saving"))
+                            catch (Exception e)
                             {
-                                Saving account = (Saving)accoutFound2.Value;
-                                if (choice == 1)
-                                    creditBO.UpdateAccount(account);
-                                else
-                                    savingBO.RemoveAccount(account);
+                                Console.WriteLine("Error:" + e.Message);
                             }
+                            
                         }
                         else
                             Console.WriteLine("We couldn’t find account with that number");

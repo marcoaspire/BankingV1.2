@@ -11,39 +11,63 @@ namespace BankingV1._7.Account.CreditAccount
     {
         public override float MonthEndBalance(Account account)
         {
-            Credit creditAccount = (Credit)account;
+            try
+            {
+                Credit creditAccount = (Credit)account;
 
-            if (creditAccount.Balance > 0)
-                return creditAccount.Balance + creditAccount.Balance * creditAccount.Interest / (100 * 12);
-            else
-                return 0;
+                if (creditAccount.Balance > 0)
+                    return creditAccount.Balance + creditAccount.Balance * creditAccount.Interest / (100 * 12);
+                else
+                    return 0;
+            }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Specified cast is not valid");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            return 0;
         }
         public override void Withdraw(LinkedListNode<Account> account)
         {
             float withdrawal;
             bool validWithdrawal = false;
-            Console.WriteLine("Pay with your credit");
-            Credit creditAccount = (Credit)account.Value;
-            float availableCredit = creditAccount.Limit - creditAccount.Balance;
-            Console.WriteLine("Balance0:"+ account.Value.Balance);
-            Console.WriteLine("aki:"+availableCredit);
-            do
+            try
             {
-                Console.WriteLine("Type the amount you want to pay");
-                validWithdrawal = float.TryParse(Console.ReadLine(), out withdrawal);
-            } while (!validWithdrawal);
-            if (withdrawal > availableCredit)
-            {
-                Console.WriteLine($"Your available credit is less than {withdrawal} \n Transaction failed");
-            }
-            else
-            {
-                Console.WriteLine("credito anterior: "+ availableCredit);
+                Console.WriteLine("Pay with your credit");
+                Credit creditAccount = (Credit)account.Value;
+                float availableCredit = creditAccount.Limit - creditAccount.Balance;
+                Console.WriteLine("Balance0:" + account.Value.Balance);
+                Console.WriteLine("aki:" + availableCredit);
+                do
+                {
+                    Console.WriteLine("Type the amount you want to pay");
+                    validWithdrawal = float.TryParse(Console.ReadLine(), out withdrawal);
+                } while (!validWithdrawal);
+                if (withdrawal > availableCredit)
+                {
+                    Console.WriteLine($"Your available credit is less than {withdrawal} \n Transaction failed");
+                }
+                else
+                {
+                    Console.WriteLine("credito anterior: " + availableCredit);
 
-                account.Value.Balance += withdrawal;
-                OperationBO.operations.Add(DateTime.Now, new Operation("Pay with credit",(Account) account.Value.Clone(), availableCredit, withdrawal));
-                Console.WriteLine(((Credit)account.Value).ToString());
+                    account.Value.Balance += withdrawal;
+                    OperationBO.operations.Add(DateTime.Now, new Operation("Pay with credit", (Account)account.Value.Clone(), availableCredit, withdrawal));
+                    Console.WriteLine(((Credit)account.Value).ToString());
+                }
             }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Specified cast is not valid");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            
 
            
         }
@@ -52,16 +76,28 @@ namespace BankingV1._7.Account.CreditAccount
         {
             bool validDeposit = false;
             float deposit;
-            Credit creditAccount = (Credit)account.Value.Clone();
-            Console.WriteLine("\nPay your credit");
-            do
+            try
             {
-                Console.WriteLine("Type the amount you want to pay");
-                validDeposit = float.TryParse(Console.ReadLine(), out deposit);
-            } while (!validDeposit || deposit < 0);
-            account.Value.Balance -= deposit;
-            OperationBO.operations.Add(DateTime.Now, new Operation("Credit payment", (Account)account.Value.Clone(), creditAccount.Balance, deposit));
-            Console.WriteLine(account.Value.ToString());
+                Credit creditAccount = (Credit)account.Value.Clone();
+                Console.WriteLine("\nPay your credit");
+                do
+                {
+                    Console.WriteLine("Type the amount you want to pay");
+                    validDeposit = float.TryParse(Console.ReadLine(), out deposit);
+                } while (!validDeposit || deposit < 0);
+                account.Value.Balance -= deposit;
+                OperationBO.operations.Add(DateTime.Now, new Operation("Credit payment", (Account)account.Value.Clone(), creditAccount.Balance, deposit));
+                Console.WriteLine(account.Value.ToString());
+            }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Specified cast is not valid");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            
         }
 
         public override Account NewAccount()
@@ -88,7 +124,6 @@ namespace BankingV1._7.Account.CreditAccount
                 validAccount = Int64.TryParse(Console.ReadLine(), out accountNumber);
                 account.AccountNumber = accountNumber;
 
-                //check if it's not in list
             } while (!validAccount);
 
             do
@@ -98,7 +133,19 @@ namespace BankingV1._7.Account.CreditAccount
                 if (string.IsNullOrEmpty(account.AccountName))
                     Console.WriteLine("Error:Name can not be empty");
             } while (string.IsNullOrEmpty(account.AccountName));
-            Console.WriteLine(((Credit)account).ToString());
+            try
+            {
+                Console.WriteLine(((Credit)account).ToString());
+            }
+            catch (InvalidCastException)
+            {
+                Console.WriteLine("Specified cast is not valid");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:" + e.Message);
+            }
+            
 
             return account;
         }

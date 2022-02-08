@@ -24,7 +24,6 @@ namespace BankingV1._7.Account
                 validDeposit = float.TryParse(Console.ReadLine(), out deposit);
             } while (!validDeposit || deposit < 0);
             float previo = account.Value.Balance;
-            Console.WriteLine("Previo:"+ previo);
             account.Value.Balance += deposit;
             OperationBO.operations.Add(DateTime.Now, new Operation("Deposit", (Account)account.Value.Clone(), accountAuxiliary.Balance, deposit));
             
@@ -60,7 +59,6 @@ namespace BankingV1._7.Account
             return account.Balance;
         }
 
-        //public abstract Account newAccount(int accountType);
         public static void ShowAllAcounts()
         {
             Console.WriteLine("Your accounts are:");
