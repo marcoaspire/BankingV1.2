@@ -8,7 +8,6 @@ namespace BankingV1._7.Account
 {
     abstract class AccountBO :IAccountBO
     {
-        //public static List<Account> accounts;
         public static LinkedList<Account> accounts;
 
         //Methods
@@ -69,7 +68,7 @@ namespace BankingV1._7.Account
             }
 
         }
-        public static LinkedListNode<Account> Find()
+        public static LinkedListNode<Account> AskAccountNumber()
         {
             bool validAccount;
             long accountNumber;
@@ -79,10 +78,9 @@ namespace BankingV1._7.Account
                 validAccount = Int64.TryParse(Console.ReadLine(), out accountNumber);
             } while (!validAccount);
 
-
-            return Find2(accountNumber);
+            return Find(accountNumber);
         }
-        public static LinkedListNode<Account> Find2(long accountNumber)
+        public static LinkedListNode<Account> Find(long accountNumber)
         {
             LinkedListNode<Account> node = AccountBO.accounts.First;
             do
@@ -95,6 +93,15 @@ namespace BankingV1._7.Account
             } while (node != null);
 
             return null;
+        }
+        public bool CheckBalance(float balance)
+        {
+            if (balance < 1)
+            {
+                Console.WriteLine("Balance must be positive. Try again");
+                return false;
+            }
+            return true;
         }
         //interface methods
         public abstract Account NewAccount();
@@ -129,14 +136,6 @@ namespace BankingV1._7.Account
             Console.WriteLine("Your change is saved");
         }
         
-        public bool CheckBalance(float balance)
-        {
-            if (balance < 1)
-            {
-                Console.WriteLine("Balance was negative. Try again");
-                return false;
-            }
-            return true;
-        }
+        
     }
 }

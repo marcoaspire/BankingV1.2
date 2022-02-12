@@ -11,6 +11,7 @@ namespace BankingV1._7.Account.CreditAccount
     {
         public override float MonthEndBalance(Account account)
         {
+            //charge interest
             try
             {
                 Credit creditAccount = (Credit)account;

@@ -131,8 +131,8 @@ namespace BankingV1._7.Menu
                 Console.WriteLine("3-Exit");
                 validNumber = Int32.TryParse(Console.ReadKey().KeyChar.ToString(), out choice);
                 if (choice > 3 || choice < 1)
-                    Console.WriteLine("Invalid option. Please enter a number between 1 and 3.");
-            } while (!validNumber || choice > 4 || choice < 1);
+                    Console.WriteLine("\nInvalid option. Please enter a number between 1 and 3.");
+            } while (!validNumber || choice > 3 || choice < 1);
             if (choice == 1)
             {
                 LogIn();
@@ -230,7 +230,7 @@ namespace BankingV1._7.Menu
                     case '2':
                         if (AccountBO.accounts != null)
                         {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.Find();
+                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
                             if (accoutFound != null)
                                 Console.WriteLine(accoutFound.Value.ToString());
                             else
@@ -252,7 +252,7 @@ namespace BankingV1._7.Menu
 
                         if (AccountBO.accounts != null)
                         {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.Find();
+                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
                             if (accoutFound != null)
                             {
                                 try
@@ -296,7 +296,7 @@ namespace BankingV1._7.Menu
                     case '5':
                         if (AccountBO.accounts != null)
                         {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.Find();
+                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
                             
                             
                             if (accoutFound != null)
@@ -329,7 +329,7 @@ namespace BankingV1._7.Menu
                     case '6':
                         if (AccountBO.accounts != null)
                         {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.Find();
+                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
                             try
                             {
                                 if (accoutFound != null)
@@ -372,7 +372,7 @@ namespace BankingV1._7.Menu
                             Console.WriteLine("You don't have an account with us. Open your account now!");
                         break;
                     case '7':
-                        LinkedListNode<Account.Account> accoutFound2 = AccountBO.Find();
+                        LinkedListNode<Account.Account> accoutFound2 = AccountBO.AskAccountNumber();
                         if (accoutFound2 != null)
                         {
                             

@@ -8,13 +8,17 @@ namespace BankingV1._7.Account
 {
     abstract class Account : ICloneable
     {
-        long accountNumber;
-        string accountName;
-        string accountType;
+        private long accountNumber;
+        private string accountName;
+        private string accountType;
         protected float balance;
-        string owner;
-        DateTime createdAt;
-        //constructor
+        private string owner;
+        private DateTime createdAt;
+        //constructors
+        public Account()
+        {
+            this.createdAt = DateTime.Now;
+        }
         public Account(string owner, string accountName, long accountNumber, string accountType, float balance)
         {
             AccountNumber = accountNumber;

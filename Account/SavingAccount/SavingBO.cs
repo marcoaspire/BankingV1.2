@@ -61,14 +61,6 @@ namespace BankingV1._7.Account.SavingAccount
             return account;
 
         }
-        /*
-        public float CheckBalance(float balance)
-        {
-            if (balance < 0)
-                return 0;
-            else
-                return balance;
-        }
-        */
+        
     }
 }

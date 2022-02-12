@@ -59,12 +59,6 @@ namespace BankingV1._7.Account
             {
                 Console.WriteLine("Invalid format in the argument");
             }
-            
-
-
-
-
-
         }
     }
 }

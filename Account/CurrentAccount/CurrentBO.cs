@@ -10,15 +10,11 @@ namespace BankingV1._7.Account.CurrentAccount
     class CurrentBO : AccountBO
     {
         /*
-        public override float monthEndBalance(Account account)
-        {
-            return account.Balance;
-        }
-        */
         public override float MonthEndBalance(Account account)
         {
             return account.Balance;
         }
+        */
 
         public override Account NewAccount()
         {

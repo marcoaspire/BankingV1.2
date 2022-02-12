@@ -9,18 +9,12 @@ namespace BankingV1._7.Account
 {
     class Operation
     {
-        //DateTime date;
-        /*
-        string type;
-        long accountNumber;
-        float currentBalance;
-        */
-
-        string operationType;
-        Account account;
-        float amount;
-        float previousBalance;
-
+        private string operationType;
+        private Account account;
+        private float amount;
+        private float previousBalance;
+        public Operation()
+        { }
         public Operation(string operationType, Account account, float previousBalance, float amount)
         {
             OperationType = operationType;

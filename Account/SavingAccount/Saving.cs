@@ -8,7 +8,9 @@ namespace BankingV1._7.Account.SavingAccount
 {
     class Saving : Account
     {
-        float interest;
+        private float interest;
+        public Saving() : base()
+        {}
         public Saving(string owner,string accountName, long accountNumber, string accountType, float balance, float interest) : base(owner,accountName, accountNumber,accountType, balance)
         {
             Interest = interest;
@@ -20,7 +22,6 @@ namespace BankingV1._7.Account.SavingAccount
         }
         //Properties 
         public float Interest { get => interest; set => interest = value; }
-        //public float Balance { get => balance; set => balance = value; }
 
         public override string ToString()
         {
