@@ -4,39 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingV1._7.Account
+namespace BankingV1._8.Account
 {
     abstract class Account : ICloneable
     {
-        private long accountNumber;
-        private string accountName;
+        private int accountID;
+        //private long accountNumber;
+        private string accountAlias;
         private string accountType;
         protected float balance;
-        private string owner;
+        private int userID;
         private DateTime createdAt;
         //constructors
         public Account()
         {
             this.createdAt = DateTime.Now;
         }
-        public Account(string owner, string accountName, long accountNumber, string accountType, float balance)
+        public Account(int userID)
         {
-            AccountNumber = accountNumber;
-            AccountName = accountName;
+            this.createdAt = DateTime.Now;
+            this.userID = userID;
+        }
+        public Account(int accountID,int userID, string accountName, string accountType, float balance)
+        {
+            AccountAlias = accountName;
             AccountType = accountType;
             Balance = balance;
             this.createdAt = DateTime.Now;
-            Owner = owner;
+            this.userID = userID;
+            this.accountID = accountID;
         }
-        public Account(string owner)
+        public Account(int accountID, string accountName, string accountType, float balance)
         {
+
+            this.accountID = accountID;
+            AccountAlias = accountName;
+            AccountType = accountType;
+            Balance = balance;
             this.createdAt = DateTime.Now;
-            Owner = owner;
         }
+        
 
         //Properties 
-        public long AccountNumber { get => accountNumber; set => accountNumber = value; }
-        public string AccountName { get => accountName; set => accountName = value; }
+        //public long AccountNumber { get => accountNumber; set => accountNumber = value; }
+        public string AccountAlias { get => accountAlias; set => accountAlias = value; }
         public string AccountType { get => accountType; set => accountType = value; }
         public float Balance { get => balance; set => balance = value; }
         public DateTime CreatedAt
@@ -44,7 +55,9 @@ namespace BankingV1._7.Account
             get => createdAt;
             //set => createdAt = value; // read only
         }
-        public string Owner { get => owner; set => owner = value; }
+        public int UserID { get => userID; //set => owner = value;
+                                             }
+        public int AccountID { get => accountID;  }
 
 
         //methods
@@ -53,7 +66,7 @@ namespace BankingV1._7.Account
         public override string ToString()
         {
             return String.Format($"-Hello dear user, your " +
-                $"{this.AccountType} {this.AccountName}, the account number is {this.AccountNumber} and you have ${this.Balance}." +
+                $"{this.AccountType} {this.AccountAlias}, the account number is {this.AccountID} and you have ${this.Balance}." +
                 $"It was opened on {this.CreatedAt}");
 
         }
@@ -63,7 +76,7 @@ namespace BankingV1._7.Account
             try
             {
                 Account account = obj as Account;
-                return this.AccountNumber.Equals(account.AccountNumber);
+                return this.accountID.Equals(account.accountID);
             }
             catch (InvalidCastException)
             {
@@ -83,7 +96,7 @@ namespace BankingV1._7.Account
 
         public override int GetHashCode()
         {
-            return 239528309 + AccountNumber.GetHashCode();
+            return 239528309 + accountID.GetHashCode();
         }
     }
 }

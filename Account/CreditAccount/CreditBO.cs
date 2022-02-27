@@ -1,47 +1,27 @@
-﻿using BankingV1._7.Menu;
+﻿using BankingV1._8.Account.Log;
+using BankingV1._8.Menu;
+using BankingV1._8.UserFolder;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingV1._7.Account.CreditAccount
+namespace BankingV1._8.Account.CreditAccount
 {
     class CreditBO : AccountBO
     {
-        public override float MonthEndBalance(Account account)
-        {
-            //charge interest
-            try
-            {
-                Credit creditAccount = (Credit)account;
-
-                if (creditAccount.Balance > 0)
-                    return creditAccount.Balance + creditAccount.Balance * creditAccount.Interest / (100 * 12);
-                else
-                    return 0;
-            }
-            catch (InvalidCastException)
-            {
-                Console.WriteLine("Specified cast is not valid");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error:" + e.Message);
-            }
-            return 0;
-        }
-        public override void Withdraw(LinkedListNode<Account> account)
+        
+        public override void Withdraw(Account account)
         {
             float withdrawal;
             bool validWithdrawal = false;
             try
             {
                 Console.WriteLine("Pay with your credit");
-                Credit creditAccount = (Credit)account.Value;
+                Credit creditAccount = (Credit)account;
                 float availableCredit = creditAccount.Limit - creditAccount.Balance;
-                Console.WriteLine("Balance0:" + account.Value.Balance);
-                Console.WriteLine("aki:" + availableCredit);
                 do
                 {
                     Console.WriteLine("Type the amount you want to pay");
@@ -54,10 +34,10 @@ namespace BankingV1._7.Account.CreditAccount
                 else
                 {
                     Console.WriteLine("credito anterior: " + availableCredit);
-
-                    account.Value.Balance += withdrawal;
-                    OperationBO.operations.Add(DateTime.Now, new Operation("Pay with credit", (Account)account.Value.Clone(), availableCredit, withdrawal));
-                    Console.WriteLine(((Credit)account.Value).ToString());
+                    Operation operation = new Operation("Pay with credit", account, withdrawal);
+                    account.Balance += withdrawal;
+                    UpdateAccount(account, operation);
+                    Console.WriteLine(((Credit)account).ToString());
                 }
             }
             catch (InvalidCastException)
@@ -68,27 +48,29 @@ namespace BankingV1._7.Account.CreditAccount
             {
                 Console.WriteLine("Error:" + e.Message);
             }
-            
 
-           
+
+
         }
 
-        public override void Deposit(LinkedListNode<Account> account)
+        public override void Deposit(Account account)
         {
             bool validDeposit = false;
             float deposit;
             try
             {
-                Credit creditAccount = (Credit)account.Value.Clone();
+                Credit creditAccount = (Credit)account;
                 Console.WriteLine("\nPay your credit");
                 do
                 {
                     Console.WriteLine("Type the amount you want to pay");
                     validDeposit = float.TryParse(Console.ReadLine(), out deposit);
                 } while (!validDeposit || deposit < 0);
-                account.Value.Balance -= deposit;
-                OperationBO.operations.Add(DateTime.Now, new Operation("Credit payment", (Account)account.Value.Clone(), creditAccount.Balance, deposit));
-                Console.WriteLine(account.Value.ToString());
+                Operation operation = new Operation("Pay your credit", account, deposit);
+                account.Balance -= deposit;
+
+                UpdateAccount(account, operation);
+                Console.WriteLine(account.ToString());
             }
             catch (InvalidCastException)
             {
@@ -98,13 +80,12 @@ namespace BankingV1._7.Account.CreditAccount
             {
                 Console.WriteLine("Error:" + e.Message);
             }
-            
+
         }
 
         public override Account NewAccount()
         {
-            bool validAccount, validBalance = false;
-            long accountNumber;
+            bool validBalance = false;
             float balance, interest = 30;
 
             Credit account = null;
@@ -112,28 +93,20 @@ namespace BankingV1._7.Account.CreditAccount
             {
                 Console.WriteLine("\nHow much do you want to deposit? Your deposit will be equal to your credit limit");
                 validBalance = Single.TryParse(Console.ReadLine(), out balance);
-               
+
             } while (!validBalance || !CheckBalance(balance));
-           account = new Credit(BankMenu.email_session, interest, balance);
+            account = new Credit(UserBO.user.UserID, interest, balance);
 
             account.AccountType = "Credit account";
 
 
             do
             {
-                Console.WriteLine("Type your account numbers");
-                validAccount = Int64.TryParse(Console.ReadLine(), out accountNumber);
-                account.AccountNumber = accountNumber;
-
-            } while (!validAccount);
-
-            do
-            {
-                Console.WriteLine("Type account name");
-                account.AccountName = Console.ReadLine();
-                if (string.IsNullOrEmpty(account.AccountName))
+                Console.WriteLine("\nType account name");
+                account.AccountAlias = Console.ReadLine();
+                if (string.IsNullOrEmpty(account.AccountAlias))
                     Console.WriteLine("Error:Name can not be empty");
-            } while (string.IsNullOrEmpty(account.AccountName));
+            } while (string.IsNullOrEmpty(account.AccountAlias));
             try
             {
                 Console.WriteLine(((Credit)account).ToString());
@@ -146,10 +119,68 @@ namespace BankingV1._7.Account.CreditAccount
             {
                 Console.WriteLine("Error:" + e.Message);
             }
-            
 
+            //operation
+            AddAccount(account, new Operation("New Account", account, 0));
             return account;
+
+
+
+
         }
 
+        public override bool AddAccount(Account a, Operation operation)
+        {
+            Credit c = a as Credit;
+            
+
+            SqlParameter[] parameters = new SqlParameter[12];
+            parameters[0] = new SqlParameter("@alias", c.AccountAlias);
+            parameters[1] = new SqlParameter("@type", 3);
+            parameters[2] = new SqlParameter("@balance", c.Balance);
+            parameters[3] = new SqlParameter("@userID", UserBO.user.UserID);
+            parameters[4] = new SqlParameter("@depositLimit", DBNull.Value);
+            parameters[5] = new SqlParameter("@interest", 20);
+            parameters[6] = new SqlParameter("@creditLimit",10000);
+            parameters[7] = new SqlParameter("@createdAt", DateTime.Now);
+
+            parameters[8] = new SqlParameter("@operationType", operation.OperationType);
+            parameters[9] = new SqlParameter("@amount", operation.Amount);
+            parameters[10] = new SqlParameter("@currentBalance", ((Account)operation.Account).Balance);
+            //parameters[11] = new SqlParameter("@previousBalance", operation.PreviousBalance);
+            parameters[11] = new SqlParameter("@operationDate", operation.Date);
+
+
+            bool res = new AccountDataAccess().Store(parameters);
+            return res;
+        }
+
+        public override void UpdateAccount(Account a, Operation operation)
+        {
+            //throw new NotImplementedException();
+            Credit c = a as Credit;
+
+            SqlParameter[] parameters = new SqlParameter[11];
+            parameters[1] = new SqlParameter("@alias", c.AccountAlias);
+            parameters[2] = new SqlParameter("@balance", c.Balance);
+            parameters[3] = new SqlParameter("@depositLimit", DBNull.Value);
+            parameters[4] = new SqlParameter("@interest", c.Interest);
+            parameters[5] = new SqlParameter("@creditLimit", c.Limit);
+            parameters[6] = new SqlParameter("@accountID", c.AccountID);
+            parameters[0] = new SqlParameter("@userID", UserBO.user.UserID);
+
+            parameters[7] = new SqlParameter("@operationType", operation.OperationType);
+            parameters[8] = new SqlParameter("@amount", operation.Amount);
+            parameters[9] = new SqlParameter("@currentBalance", ((Account)operation.Account).Balance);
+            //parameters[10] = new SqlParameter("@previousBalance", operation.PreviousBalance);
+            parameters[10] = new SqlParameter("@operationDate", operation.Date);
+
+            bool res = new AccountDataAccess().Update(parameters);
+
+            if (res)
+                Console.WriteLine("Your change is saved credit");
+            else
+                Console.WriteLine("error credit");
+        }
     }
 }
